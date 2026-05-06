@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D50 Marketing Campaign — Performance Report</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+:root {
+  --navy: #0C2340;
+  --blue: #185FA5;
+  --blue2: #378ADD;
+  --blue3: #85B7EB;
+  --blue4: #B5D4F4;
+  --blue5: #E6F1FB;
+  --green: #3B6D11;
+  --green2: #639922;
+  --green3: #EAF3DE;
+  --red: #A32D2D;
+  --red2: #E24B4A;
+  --red3: #FCEBEB;
+  --amber: #854F0B;
+  --amber2: #BA7517;
+  --amber3: #FAEEDA;
+  --gray: #888780;
+  --gray2: #D3D1C7;
+  --gray3: #F1EFE8;
+  --gray4: #F8F7F4;
+  --text: #1A1A1A;
+  --text2: #555;
+  --text3: #888;
+  --border: #E4E2DC;
+  --white: #fff;
+  --font: 'DM Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--gray4);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+/* ── HEADER ── */
+.report-header {
+  background: var(--navy);
+  border-radius: 12px;
+  padding: 40px 48px;
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+}
+.report-header::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: rgba(55,138,221,0.12);
+}
+.report-header::after {
+  content: '';
+  position: absolute;
+  bottom: -40px; left: 200px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+}
+.header-eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue3);
+  margin-bottom: 10px;
+}
+.header-title {
+  font-size: 32px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+.header-sub {
+  font-size: 14px;
+  color: var(--blue4);
+  font-weight: 400;
+}
+.header-meta {
+  display: flex;
+  gap: 24px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+.header-pill {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.8);
+  font-weight: 500;
+}
+
+/* ── SECTION LABELS ── */
+.section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 12px;
+  margin-top: 8px;
+}
+
+/* ── KPI GRID ── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.kpi-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+}
+.kpi-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  margin-bottom: 6px;
+}
+.kpi-value {
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1;
+  margin-bottom: 5px;
+  color: var(--navy);
+}
+.kpi-sub {
+  font-size: 11.5px;
+  color: var(--text3);
+}
+.kpi-accent { font-size: 11.5px; font-weight: 600; }
+.accent-red { color: var(--red2); }
+.accent-green { color: var(--green2); }
+.accent-amber { color: var(--amber2); }
+.accent-blue { color: var(--blue); }
+
+.kpi-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+/* ── DIVIDER ── */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 28px 0;
+}
+
+/* ── CARDS ── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px 24px;
+}
+.card-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 16px;
+}
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+
+/* ── FUNNEL ── */
+.funnel-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 7px;
+}
+.funnel-label {
+  font-size: 12px;
+  color: var(--text2);
+  width: 150px;
+  flex-shrink: 0;
+}
+.funnel-track {
+  flex: 1;
+  background: var(--gray3);
+  border-radius: 4px;
+  height: 24px;
+  overflow: hidden;
+}
+.funnel-bar {
+  height: 24px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding-right: 10px;
+  justify-content: flex-end;
+  min-width: 44px;
+  transition: width 0.6s ease;
+}
+.funnel-count {
+  font-size: 11px;
+  font-weight: 600;
+}
+.funnel-pct {
+  font-size: 11px;
+  color: var(--text3);
+  width: 44px;
+  text-align: right;
+  flex-shrink: 0;
+  font-family: var(--mono);
+}
+
+/* ── HORIZONTAL BARS ── */
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 9px;
+}
+.bar-name {
+  font-size: 12px;
+  color: var(--text2);
+  width: 160px;
+  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bar-track {
+  flex: 1;
+  background: var(--gray3);
+  border-radius: 4px;
+  height: 20px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding-right: 8px;
+  justify-content: flex-end;
+  min-width: 28px;
+}
+.bar-val { font-size: 11px; font-weight: 600; }
+
+/* ── STATUS ROWS ── */
+.status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+}
+.status-row:last-child { border-bottom: none; }
+.status-name { font-size: 13px; }
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.badge-green { background: var(--green3); color: var(--green); }
+.badge-blue { background: var(--blue5); color: var(--blue); }
+.badge-red { background: var(--red3); color: var(--red); }
+.badge-amber { background: var(--amber3); color: var(--amber); }
+.badge-gray { background: var(--gray3); color: var(--gray); }
+
+/* ── INSIGHT BOXES ── */
+.insight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 28px; }
+.insight-box {
+  border-left: 3px solid var(--blue2);
+  background: var(--gray4);
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+}
+.insight-box.warn { border-left-color: var(--red2); }
+.insight-box.ok { border-left-color: var(--green2); }
+.insight-box.caution { border-left-color: var(--amber2); }
+.insight-title {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+.insight-text { font-size: 12px; color: var(--text2); line-height: 1.55; }
+
+/* ── ACTION TABLE ── */
+.action-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.action-table thead tr {
+  background: var(--navy);
+  color: #fff;
+}
+.action-table thead th {
+  padding: 11px 14px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.action-table tbody tr:nth-child(even) { background: var(--gray4); }
+.action-table tbody tr:nth-child(odd) { background: var(--white); }
+.action-table tbody td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.priority-critical { color: var(--red); font-weight: 700; }
+.priority-high { color: var(--amber); font-weight: 700; }
+.priority-medium { color: var(--blue); font-weight: 700; }
+
+/* ── CONVERSION TABLE ── */
+.conv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  margin-top: 12px;
+}
+.conv-table thead tr { background: var(--gray3); }
+.conv-table thead th {
+  padding: 9px 12px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text2);
+  border-bottom: 1px solid var(--border);
+}
+.conv-table tbody tr:nth-child(even) { background: var(--gray4); }
+.conv-table tbody td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.assess-good { color: var(--green); font-weight: 600; }
+.assess-bad { color: var(--red); font-weight: 600; }
+.assess-ok { color: var(--blue); font-weight: 600; }
+
+/* ── FOOTER ── */
+.report-footer {
+  background: var(--navy);
+  border-radius: 10px;
+  padding: 18px 28px;
+  margin-top: 36px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  text-align: center;
+}
+
+/* ── DONUT LEGEND ── */
+.donut-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 12px;
+  font-size: 11.5px;
+  color: var(--text2);
+}
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+.chart-wrap { position: relative; width: 100%; }
+.summary-note {
+  background: var(--gray3);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--text2);
+  margin-top: 10px;
+  line-height: 1.55;
+}
+.big-stat { font-size: 40px; font-weight: 600; text-align: center; padding: 18px 0 4px; }
+.big-stat-label { font-size: 12px; color: var(--text3); text-align: center; margin-bottom: 14px; }
+
+@media print {
+  body { background: white; }
+  .page { padding: 0; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="report-header">
+    <div class="header-eyebrow">Confidential · Marketing Campaign Analysis</div>
+    <div class="header-title">D50 Marketing Campaign<br>Performance Report</div>
+    <div class="header-sub">End-to-end funnel analysis · Strategic recommendations · 30-day action plan</div>
+    <div class="header-meta">
+      <span class="header-pill">Client: Infrability</span>
+      <span class="header-pill">Market: KSA (Saudi Arabia)</span>
+      <span class="header-pill">Channel: Calling Campaign</span>
+      <span class="header-pill">Period: Feb – May 2026</span>
+      <span class="header-pill">Agent: Lilian (D50)</span>
+    </div>
+  </div>
+
+  <!-- TOP-LINE KPIs -->
+  <div class="section-label">Top-line metrics</div>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Contacts dialed</div>
+      <div class="kpi-value">906</div>
+      <div class="kpi-sub">1,131 total call attempts</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Leads generated</div>
+      <div class="kpi-value">28</div>
+      <div class="kpi-accent accent-amber">3.1% lead rate</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Meetings booked</div>
+      <div class="kpi-value">25</div>
+      <div class="kpi-accent accent-green">89.3% book rate of leads</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Qualified meetings</div>
+      <div class="kpi-value">15</div>
+      <div class="kpi-accent accent-green">88.2% qualification rate</div>
+    </div>
+  </div>
+  <div class="kpi-grid-2">
+    <div class="kpi-card">
+      <div class="kpi-label">Call answer rate</div>
+      <div class="kpi-value" style="font-size:24px;">0.35%</div>
+      <div class="kpi-accent accent-red">Only 4 of 1,131 attempts answered</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Meeting show rate</div>
+      <div class="kpi-value" style="font-size:24px;">60%</div>
+      <div class="kpi-sub">3 cancelled · 2 no-show · 1 rescheduled</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Avg company size</div>
+      <div class="kpi-value" style="font-size:24px;">60</div>
+      <div class="kpi-sub">Median employees (of 886 contacts)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Active agents</div>
+      <div class="kpi-value" style="font-size:24px;">1</div>
+      <div class="kpi-sub">Agent: Lilian (D50)</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FUNNEL -->
+  <div class="section-label">Sales funnel analysis</div>
+  <div class="card" style="margin-bottom:28px;">
+    <div class="card-title">End-to-end conversion pipeline</div>
+    <div class="funnel-row">
+      <div class="funnel-label">Contacts in database</div>
+      <div class="funnel-track"><div class="funnel-bar" style="width:100%;background:#185FA5;"><span class="funnel-count" style="color:#fff;">906</span></div></div>
+      <div class="funnel-pct">100%</div>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-label">1st attempt made</div>
+      <div class="funnel-track"><div class="funnel-bar" style="width:99.2%;background:#378ADD;"><span class="funnel-count" style="color:#fff;">899</span></div></div>
+      <div class="funnel-pct">99.2%</div>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-label">2nd attempt made</div>
+      <div class="funnel-track"><div class="funnel-bar" style="width:23.9%;background:#85B7EB;"><span class="funnel-count" style="color:#0C2340;">217</span></div></div>
+      <div class="funnel-pct">23.9%</div>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-label">3rd attempt made</div>
+      <div class="funnel-track"><div class="funnel-bar" style="width:1.65%;background:#B5D4F4;min-width:44px;"><span class="funnel-count" style="color:#0C2340;">15</span></div></div>
+      <div class="funnel-pct">1.65%</div>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-label">Calls answered</div>
+      <div class="funnel-track"><div class="funnel-bar" style="width:0.44%;background:#E24B4A;min-width:44px;"><span class="funnel-count" style="color:#fff;">4</span></div></div>
+      <div class="funnel-pct" style="color:#E24B4A;">0.44%</div>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-label">Leads captured</div>
+      <div class="funnel-track"><div class="funnel-bar" style="width:3.09%;background:#3B6D11;min-width:44px;"><span class="funnel-count" style="color:#fff;">28</span></div></div>
+      <div class="funnel-pct" style="color:#3B6D11;">3.1%</div>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-label">Meetings booked</div>
+      <div class="funnel-track"><div class="funnel-bar" style="width:2.76%;background:#27500A;min-width:44px;"><span class="funnel-count" style="color:#fff;">25</span></div></div>
+      <div class="funnel-pct" style="color:#3B6D11;">2.8%</div>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-label">Attended + qualified</div>
+      <div class="funnel-track"><div class="funnel-bar" style="width:1.66%;background:#173404;min-width:44px;"><span class="funnel-count" style="color:#fff;">15</span></div></div>
+      <div class="funnel-pct" style="color:#3B6D11;">1.7%</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- LEAD QUALITY -->
+  <div class="section-label">Lead quality &amp; meeting outcomes</div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Meeting outcome breakdown (28 leads)</div>
+      <div class="chart-wrap" style="height:200px;">
+        <canvas id="outcomeChart" role="img" aria-label="Donut chart of meeting outcomes"></canvas>
+      </div>
+      <div class="donut-legend">
+        <span class="legend-item"><span class="legend-dot" style="background:#3B6D11;"></span>Attended + qualified (15) — 54%</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#888780;"></span>No feedback yet (5) — 18%</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#A32D2D;"></span>Cancelled (3) — 11%</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#E24B4A;"></span>No show (2) — 7%</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#EF9F27;"></span>Not qualified (2) — 7%</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#BA7517;"></span>Rescheduled (1) — 4%</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Lead tag status</div>
+      <div class="status-row"><span class="status-name">Booked</span><span class="badge badge-green">25 leads · 89.3%</span></div>
+      <div class="status-row"><span class="status-name">Interested</span><span class="badge badge-blue">2 leads · 7.1%</span></div>
+      <div class="status-row"><span class="status-name">Not interested</span><span class="badge badge-red">1 lead · 3.6%</span></div>
+      <div style="height:16px;"></div>
+      <div class="card-title">Key decision-maker roles reached</div>
+      <div class="status-row"><span class="status-name">IT Manager / Head of IT</span><span class="badge badge-blue">5</span></div>
+      <div class="status-row"><span class="status-name">Finance / CFO level</span><span class="badge badge-blue">5</span></div>
+      <div class="status-row"><span class="status-name">C-Suite (CEO / COO)</span><span class="badge badge-blue">3</span></div>
+      <div class="status-row"><span class="status-name">Director / Regional Head</span><span class="badge badge-blue">3</span></div>
+      <div class="status-row"><span class="status-name">Other roles</span><span class="badge badge-gray">12</span></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- INDUSTRY -->
+  <div class="section-label">Industry targeting analysis</div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Calls dialed by industry (top 8)</div>
+      <div class="chart-wrap" style="height:280px;">
+        <canvas id="industryChart" role="img" aria-label="Horizontal bar chart of calls by industry"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Leads generated by industry</div>
+      <div class="bar-row"><span class="bar-name">Real Estate</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:#185FA5;"><span class="bar-val" style="color:#fff;">7</span></div></div></div>
+      <div class="bar-row"><span class="bar-name">Retail</span><div class="bar-track"><div class="bar-fill" style="width:85.7%;background:#378ADD;"><span class="bar-val" style="color:#fff;">6</span></div></div></div>
+      <div class="bar-row"><span class="bar-name">Transportation</span><div class="bar-track"><div class="bar-fill" style="width:28.6%;background:#85B7EB;"><span class="bar-val" style="color:#0C2340;">2</span></div></div></div>
+      <div class="bar-row"><span class="bar-name">Logistics & SC</span><div class="bar-track"><div class="bar-fill" style="width:28.6%;background:#85B7EB;"><span class="bar-val" style="color:#0C2340;">2</span></div></div></div>
+      <div class="bar-row"><span class="bar-name">Consumer Services</span><div class="bar-track"><div class="bar-fill" style="width:28.6%;background:#85B7EB;"><span class="bar-val" style="color:#0C2340;">2</span></div></div></div>
+      <div class="bar-row"><span class="bar-name">Hospitality</span><div class="bar-track"><div class="bar-fill" style="width:14.3%;background:#B5D4F4;min-width:28px;"><span class="bar-val" style="color:#0C2340;">1</span></div></div></div>
+      <div class="bar-row"><span class="bar-name">Health & Wellness</span><div class="bar-track"><div class="bar-fill" style="width:14.3%;background:#B5D4F4;min-width:28px;"><span class="bar-val" style="color:#0C2340;">1</span></div></div></div>
+      <div class="bar-row"><span class="bar-name">Other (5 sectors)</span><div class="bar-track"><div class="bar-fill" style="width:36%;background:#888780;"><span class="bar-val" style="color:#fff;">5</span></div></div></div>
+
+      <div class="summary-note">
+        <strong>Conversion efficiency</strong> (leads ÷ calls): Real Estate 2.9% · Retail 3.1% · Logistics 2.2% · Hospitality 0.8%
+      </div>
+
+      <table class="conv-table" style="margin-top:14px;">
+        <thead>
+          <tr>
+            <th>Industry</th><th>Calls</th><th>Leads</th><th>Rate</th><th>Assessment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Real Estate</td><td>~240</td><td>7</td><td>2.9%</td><td class="assess-good">Scale up</td></tr>
+          <tr><td>Retail</td><td>~194</td><td>6</td><td>3.1%</td><td class="assess-good">Scale up</td></tr>
+          <tr><td>Logistics & SC</td><td>~91</td><td>2</td><td>2.2%</td><td class="assess-ok">Maintain</td></tr>
+          <tr><td>Hospitality</td><td>~120</td><td>1</td><td>0.8%</td><td class="assess-bad">Review</td></tr>
+          <tr><td>Civil Engineering</td><td>~54</td><td>0</td><td>0%</td><td class="assess-bad">Pause</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CALL PERFORMANCE -->
+  <div class="section-label">Call performance &amp; effort analysis</div>
+  <div class="three-col">
+    <div class="card">
+      <div class="card-title">Call attempt distribution</div>
+      <div class="chart-wrap" style="height:170px;">
+        <canvas id="attemptsChart" role="img" aria-label="Donut chart of call attempts"></canvas>
+      </div>
+      <div class="donut-legend" style="margin-top:12px;">
+        <span class="legend-item"><span class="legend-dot" style="background:#185FA5;"></span>1st attempt — 899 (79.5%)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#85B7EB;"></span>2nd attempt — 217 (19.2%)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#B5D4F4;"></span>3rd attempt — 15 (1.3%)</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Answered vs. no answer</div>
+      <div class="big-stat" style="color:#E24B4A;">99.6%</div>
+      <div class="big-stat-label">no answer rate</div>
+      <div class="status-row"><span class="status-name">No answer</span><span class="badge badge-red">419 logged</span></div>
+      <div class="status-row"><span class="status-name">Answered</span><span class="badge badge-green">4 calls</span></div>
+      <div class="status-row"><span class="status-name">Not the right person</span><span class="badge badge-amber">2</span></div>
+      <div class="status-row"><span class="status-name">Wrong number</span><span class="badge badge-gray">1</span></div>
+      <div class="status-row"><span class="status-name">Not interested</span><span class="badge badge-red">4</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Target company size (employees)</div>
+      <div class="bar-row" style="margin-top:4px;"><span class="bar-name" style="width:80px;">Under 50</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:#185FA5;"><span class="bar-val" style="color:#fff;">389</span></div></div></div>
+      <div class="bar-row"><span class="bar-name" style="width:80px;">50–200</span><div class="bar-track"><div class="bar-fill" style="width:75.3%;background:#378ADD;"><span class="bar-val" style="color:#fff;">293</span></div></div></div>
+      <div class="bar-row"><span class="bar-name" style="width:80px;">200–500</span><div class="bar-track"><div class="bar-fill" style="width:29%;background:#85B7EB;"><span class="bar-val" style="color:#0C2340;">113</span></div></div></div>
+      <div class="bar-row"><span class="bar-name" style="width:80px;">500–1,000</span><div class="bar-track"><div class="bar-fill" style="width:19.8%;background:#B5D4F4;"><span class="bar-val" style="color:#0C2340;">77</span></div></div></div>
+      <div class="bar-row"><span class="bar-name" style="width:80px;">1,000+</span><div class="bar-track"><div class="bar-fill" style="width:3.3%;background:#E6F1FB;min-width:28px;"><span class="bar-val" style="color:#0C2340;">13</span></div></div></div>
+      <div class="summary-note" style="margin-top:10px;">Median company size: <strong>60 employees</strong>. 75% of the database is sub-200 employee SMBs.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- STRATEGIC INSIGHTS -->
+  <div class="section-label">Strategic insights &amp; recommended actions</div>
+  <div class="insight-grid">
+    <div class="insight-box warn">
+      <div class="insight-title">Critical — call answer rate is near zero</div>
+      <div class="insight-text">Only 4 of 1,131 call attempts were answered (0.35%). Cold calling unknown numbers in KSA is near-universally rejected. WhatsApp, LinkedIn voice notes, or email warm-up before calls are table-stakes in this market.</div>
+    </div>
+    <div class="insight-box ok">
+      <div class="insight-title">Qualification rate is excellent — product-market fit is strong</div>
+      <div class="insight-text">88.2% of meeting attendees qualify. The pitch and value proposition are landing well. The entire problem is getting prospects to pick up and show up, not the product itself.</div>
+    </div>
+    <div class="insight-box warn">
+      <div class="insight-title">3rd-attempt follow-through is severely lacking</div>
+      <div class="insight-text">76% of contacts received only 1 call. Industry benchmarks require 5–8 touchpoints for B2B conversion. The drop from 2nd (217) to 3rd (15) attempts represents a massive missed opportunity.</div>
+    </div>
+    <div class="insight-box ok">
+      <div class="insight-title">Real Estate &amp; Retail are clear winning verticals</div>
+      <div class="insight-text">Both verticals deliver 2.9–3.1% conversion rates vs. 0.8% in Hospitality. Budget should be reallocated heavily toward these two industries for maximum ROI.</div>
+    </div>
+    <div class="insight-box caution">
+      <div class="insight-title">40% of booked meetings are not being attended</div>
+      <div class="insight-text">Cancellations, no-shows, and reschedules account for 10 of 25 booked meetings. Automated 24hr + 2hr reminders via WhatsApp and calendar invites should recover at least half these drop-outs.</div>
+    </div>
+    <div class="insight-box caution">
+      <div class="insight-title">Targeting too many small companies</div>
+      <div class="insight-text">75% of the database has under 200 employees. For enterprise software like Infrability, these likely have smaller budgets. Filtering for 200+ employee companies should increase deal size significantly.</div>
+    </div>
+    <div class="insight-box warn">
+      <div class="insight-title">Hospitality is high volume, low yield</div>
+      <div class="insight-text">120 calls to Hospitality produced only 1 lead (0.8%). Either the contact list quality is low or the segment has lower pain alignment with Infrability's offering. Consider pausing.</div>
+    </div>
+    <div class="insight-box ok">
+      <div class="insight-title">Strong ICP signal from decision-maker roles</div>
+      <div class="insight-text">IT Managers, CEOs, COOs, and Finance heads account for the majority of leads. This ICP should be enforced across the entire 906-contact call list and used to build the LinkedIn targeting strategy.</div>
+    </div>
+  </div>
+
+  <!-- PRIORITY MATRIX -->
+  <div class="section-label">Action priority matrix</div>
+  <div class="card" style="margin-bottom:28px;">
+    <div class="card-title">Impact vs. effort — where to focus next</div>
+    <div class="chart-wrap" style="height:280px;">
+      <canvas id="priorityChart" role="img" aria-label="Bubble chart of priority actions by impact vs effort"></canvas>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ACTION PLAN -->
+  <div class="section-label">30-day action plan</div>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table class="action-table">
+      <thead>
+        <tr>
+          <th style="width:28px;">#</th>
+          <th>Action</th>
+          <th style="width:130px;">Owner</th>
+          <th style="width:90px;">Priority</th>
+          <th>Expected impact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Add WhatsApp as primary outreach channel — send message before any call attempt</td>
+          <td>D50</td>
+          <td><span class="priority-critical">Critical</span></td>
+          <td>10–20x improvement in answer/response rate</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Increase follow-up sequences to 5–8 touches per contact (not 1–3)</td>
+          <td>D50</td>
+          <td><span class="priority-critical">Critical</span></td>
+          <td>2–3x more leads from the existing database</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Set up 24hr + 2hr WhatsApp/email meeting reminders for all booked meetings</td>
+          <td>Internal + D50</td>
+          <td><span class="priority-high">High</span></td>
+          <td>Recover ~5 additional meetings per month</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Filter call list to companies with 200+ employees — remove sub-200 SMBs</td>
+          <td>D50</td>
+          <td><span class="priority-high">High</span></td>
+          <td>Higher deal sizes, better budget alignment</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Pause Hospitality &amp; Civil Engineering — reallocate budget to Real Estate + Retail</td>
+          <td>Internal</td>
+          <td><span class="priority-high">High</span></td>
+          <td>30–40% more leads from the same spend</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>Launch LinkedIn outreach targeting IT Managers and C-suite in Real Estate &amp; Retail KSA</td>
+          <td>D50</td>
+          <td><span class="priority-medium">Medium</span></td>
+          <td>Warm pipeline via content + DMs before calls</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>Require weekly reporting from D50: calls made, answered, leads, meetings booked/attended</td>
+          <td>Internal</td>
+          <td><span class="priority-medium">Medium</span></td>
+          <td>Full visibility, accountability, faster iteration</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="report-footer">
+    Confidential — prepared for Infrability &nbsp;·&nbsp;
+    D50 campaign data as of May 2026 &nbsp;·&nbsp;
+    Analysis covers: Leads Tracker (28 records) · Calling Sheet (906 contacts, 1,131 attempts) &nbsp;·&nbsp;
+    All industries: KSA market only
+  </div>
+
+</div>
+
+<script>
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+
+new Chart(document.getElementById('outcomeChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Attended & qualified','No feedback yet','Cancelled','No show','Not qualified','Rescheduled'],
+    datasets: [{
+      data: [15, 5, 3, 2, 2, 1],
+      backgroundColor: ['#3B6D11','#888780','#A32D2D','#E24B4A','#EF9F27','#BA7517'],
+      borderWidth: 2, borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '62%',
+    plugins: { legend: { display: false } }
+  }
+});
+
+new Chart(document.getElementById('industryChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Real Estate','Retail','Hospitality','Logistics & SC','Civil Engineering','Building Materials','Warehousing','Leisure & Tourism'],
+    datasets: [{
+      data: [240, 194, 120, 91, 54, 36, 28, 25],
+      backgroundColor: ['#185FA5','#185FA5','#E24B4A','#185FA5','#888780','#888780','#185FA5','#888780'],
+      borderRadius: 4, borderWidth: 0
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    scales: {
+      x: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 10 }, color: '#999' }, border: { display: false } },
+      y: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#555' }, border: { display: false } }
+    },
+    plugins: { legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.x} calls` } }
+    }
+  }
+});
+
+new Chart(document.getElementById('attemptsChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['1st attempt','2nd attempt','3rd attempt'],
+    datasets: [{
+      data: [899, 217, 15],
+      backgroundColor: ['#185FA5','#85B7EB','#B5D4F4'],
+      borderWidth: 2, borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, cutout: '58%',
+    plugins: { legend: { display: false } }
+  }
+});
+
+new Chart(document.getElementById('priorityChart'), {
+  type: 'bubble',
+  data: {
+    datasets: [
+      { label: 'Switch to WhatsApp outreach', data: [{x:2,y:9.2,r:18}], backgroundColor: 'rgba(24,95,165,0.75)', borderColor: '#185FA5', borderWidth: 1.5 },
+      { label: 'Increase to 5+ attempt sequences', data: [{x:3.2,y:8.2,r:16}], backgroundColor: 'rgba(59,109,17,0.75)', borderColor: '#3B6D11', borderWidth: 1.5 },
+      { label: 'Meeting reminder automation', data: [{x:3.5,y:7.2,r:14}], backgroundColor: 'rgba(133,79,11,0.75)', borderColor: '#854F0B', borderWidth: 1.5 },
+      { label: 'Filter 200+ employee companies', data: [{x:4.5,y:8.0,r:14}], backgroundColor: 'rgba(59,109,17,0.65)', borderColor: '#3B6D11', borderWidth: 1.5 },
+      { label: 'Pause Hospitality vertical', data: [{x:2.0,y:6.0,r:10}], backgroundColor: 'rgba(163,45,45,0.7)', borderColor: '#A32D2D', borderWidth: 1.5 },
+      { label: 'LinkedIn outreach for IT/C-suite', data: [{x:5.5,y:8.8,r:16}], backgroundColor: 'rgba(83,74,183,0.75)', borderColor: '#534AB7', borderWidth: 1.5 },
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    layout: { padding: { right: 20, top: 10 } },
+    scales: {
+      x: {
+        min: 0, max: 10,
+        title: { display: true, text: '← Lower effort          Higher effort →', font: { size: 11 }, color: '#888' },
+        grid: { color: 'rgba(0,0,0,0.06)' }, border: { display: false },
+        ticks: { font: { size: 10 }, color: '#aaa',
+          callback: v => ['','Very low','Low','Medium','High','Very high','','','','',''][v] || '' }
+      },
+      y: {
+        min: 5, max: 10,
+        title: { display: true, text: '← Lower impact          Higher impact →', font: { size: 11 }, color: '#888' },
+        grid: { color: 'rgba(0,0,0,0.06)' }, border: { display: false },
+        ticks: { font: { size: 10 }, color: '#aaa',
+          callback: v => v===9?'Very high':v===7?'High':v===5?'Medium':'' }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: { label: ctx => ' ' + ctx.dataset.label }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
